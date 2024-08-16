@@ -2,7 +2,7 @@
 
 This Python script continuously pings a specified target and visualizes the real-time latency in a chart using Matplotlib. It displays the min, max, and average ping times as well as annotates any ping times that exceed 100ms.
 
-![Real-time Ping Chart](./image1.png "Real-time Ping Chart")
+![Real-time Ping Chart](./image2.png "Real-time Ping Chart")
 
 ## Requirements
 
