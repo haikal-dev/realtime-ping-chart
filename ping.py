@@ -15,7 +15,7 @@ ping_times = []
 # Create the plot
 fig, ax = plt.subplots()
 line, = ax.plot(ping_times)
-ax.set_ylim(0, 1000)  # Adjust y-limit to ensure we can see points above 100ms
+ax.set_ylim(0, 200)  # Adjust y-limit to ensure we can see points above 100ms
 
 # Initialize a variable to hold the latest point annotation
 latest_annotation = None
@@ -46,7 +46,7 @@ def update(frame):
         ping_times.append(ping_time)
 
         # Limit the number of points shown on the graph
-        if len(ping_times) > 500:
+        if len(ping_times) > 100:
             ping_times.pop(0)
 
         # Update the line data
