@@ -115,5 +115,5 @@ fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
 # Show the plot
 plt.xlabel("Ping Number")
 plt.ylabel("Ping Time (ms)")
-plt.title("Real-time Latency Chart")
+plt.title("Real-time Latency Chart: " + sys.argv[1])
 plt.show()
