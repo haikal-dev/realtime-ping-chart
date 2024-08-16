@@ -24,6 +24,12 @@ latest_annotation = None
 stats_text = ax.text(0.95, 0.95, '', transform=ax.transAxes, ha='right', va='top',
                      bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
+# Add an annotation for the tooltip
+tooltip = ax.annotate('', xy=(0, 0), xytext=(10, 10),
+                      textcoords='offset points', bbox=dict(boxstyle='round,pad=0.5', fc='white', edgecolor='black'),
+                      arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.2'),
+                      visible=False)
+
 # Function to update the plot with new ping data
 def update(frame):
     global latest_annotation  # Use global to track the latest annotation
@@ -76,8 +82,35 @@ def update(frame):
 
     return line,
 
+# Event handler for mouse motion
+def on_mouse_move(event):
+    if event.inaxes == ax:
+        # Get the x and y coordinates of the mouse
+        x, y = event.xdata, event.ydata
+        
+        # Find the closest data point
+        if len(ping_times) > 0:
+            xdata = range(len(ping_times))
+            ydata = ping_times
+            distances = [(xi - x) ** 2 + (yi - y) ** 2 for xi, yi in zip(xdata, ydata)]
+            closest_idx = distances.index(min(distances))
+
+            # Update tooltip text and position
+            tooltip.set_text(f'{ping_times[closest_idx]:.2f} ms')
+            tooltip.xy = (xdata[closest_idx], ydata[closest_idx])
+            tooltip.set_visible(True)
+        else:
+            tooltip.set_visible(False)
+        fig.canvas.draw_idle()
+    else:
+        tooltip.set_visible(False)
+        fig.canvas.draw_idle()
+
 # Set up the animation
 ani = animation.FuncAnimation(fig, update, interval=1000)  # Update every second
+
+# Connect the event handler
+fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
 
 # Show the plot
 plt.xlabel("Ping Number")
