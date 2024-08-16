@@ -5,12 +5,14 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import subprocess
 import sys
+from datetime import datetime
 
 # Ping target from command line argument
 ping_target = sys.argv[1]
 
-# Initialize an empty list to store ping times
+# Initialize lists to store ping times and timestamps
 ping_times = []
+ping_timestamps = []
 
 # Create the plot
 fig, ax = plt.subplots()
@@ -44,22 +46,16 @@ def update(frame):
         ping_time = float(ping_time_match.group(1))
         
         ping_times.append(ping_time)
+        ping_timestamps.append(datetime.now())
 
         # Limit the number of points shown on the graph
         if len(ping_times) > 100:
             ping_times.pop(0)
+            ping_timestamps.pop(0)
 
         # Update the line data
         line.set_data(range(len(ping_times)), ping_times)
         ax.set_xlim(0, len(ping_times))
-
-        # Label every point that exceeds 100ms
-        # if ping_time > 100:
-        #     ax.annotate(f'{ping_time}ms', 
-        #                 xy=(len(ping_times) - 1, ping_time),
-        #                 xytext=(len(ping_times) - 1, ping_time + 10),
-        #                 arrowprops=dict(facecolor='red', shrink=0.05),
-        #                 bbox=dict(facecolor='yellow', edgecolor='red', boxstyle='round,pad=0.5'))
 
         # Remove the previous latest annotation
         if latest_annotation:
@@ -95,8 +91,11 @@ def on_mouse_move(event):
             distances = [(xi - x) ** 2 + (yi - y) ** 2 for xi, yi in zip(xdata, ydata)]
             closest_idx = distances.index(min(distances))
 
-            # Update tooltip text and position
-            tooltip.set_text(f'{ping_times[closest_idx]:.2f} ms')
+            # Get the time for the closest ping
+            ping_time_str = ping_timestamps[closest_idx].strftime('%I:%M:%S %p')
+
+            # Update tooltip text and position with both ping value and time
+            tooltip.set_text(f'{ping_times[closest_idx]:.2f} ms\n{ping_time_str}')
             tooltip.xy = (xdata[closest_idx], ydata[closest_idx])
             tooltip.set_visible(True)
         else:
@@ -106,14 +105,24 @@ def on_mouse_move(event):
         tooltip.set_visible(False)
         fig.canvas.draw_idle()
 
+# Format x-axis labels as time strings
+def format_func(value, tick_number):
+    if len(ping_timestamps) > int(value):
+        return ping_timestamps[int(value)].strftime('%I:%M:%S %p')
+    else:
+        return ''
+
 # Set up the animation
 ani = animation.FuncAnimation(fig, update, interval=1000)  # Update every second
 
 # Connect the event handler
 fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
 
+# Set the formatter for the x-axis
+ax.xaxis.set_major_formatter(plt.FuncFormatter(format_func))
+
 # Show the plot
-plt.xlabel("Ping Number")
+plt.xlabel("Time")
 plt.ylabel("Ping Time (ms)")
 plt.title("Real-time Latency Chart: " + sys.argv[1])
 plt.show()
