@@ -48,12 +48,12 @@ def update(frame):
         ax.set_xlim(0, len(ping_times))
 
         # Label every point that exceeds 100ms
-        if ping_time > 100:
-            ax.annotate(f'{ping_time}ms', 
-                        xy=(len(ping_times) - 1, ping_time),
-                        xytext=(len(ping_times) - 1, ping_time + 10),
-                        arrowprops=dict(facecolor='red', shrink=0.05),
-                        bbox=dict(facecolor='yellow', edgecolor='red', boxstyle='round,pad=0.5'))
+        # if ping_time > 100:
+        #     ax.annotate(f'{ping_time}ms', 
+        #                 xy=(len(ping_times) - 1, ping_time),
+        #                 xytext=(len(ping_times) - 1, ping_time + 10),
+        #                 arrowprops=dict(facecolor='red', shrink=0.05),
+        #                 bbox=dict(facecolor='yellow', edgecolor='red', boxstyle='round,pad=0.5'))
 
         # Remove the previous latest annotation
         if latest_annotation:
