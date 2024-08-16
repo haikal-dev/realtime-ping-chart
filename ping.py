@@ -105,12 +105,9 @@ def on_mouse_move(event):
         tooltip.set_visible(False)
         fig.canvas.draw_idle()
 
-# Format x-axis labels as time strings
+# Format x-axis labels as hidden
 def format_func(value, tick_number):
-    if len(ping_timestamps) > int(value):
-        return ping_timestamps[int(value)].strftime('%I:%M:%S %p')
-    else:
-        return ''
+    return tick_number  # Return an empty string to hide labels
 
 # Set up the animation
 ani = animation.FuncAnimation(fig, update, interval=1000)  # Update every second
@@ -118,7 +115,7 @@ ani = animation.FuncAnimation(fig, update, interval=1000)  # Update every second
 # Connect the event handler
 fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
 
-# Set the formatter for the x-axis
+# Set the formatter for the x-axis to hide labels
 ax.xaxis.set_major_formatter(plt.FuncFormatter(format_func))
 
 # Show the plot
