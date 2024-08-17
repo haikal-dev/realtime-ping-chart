@@ -110,7 +110,7 @@ def format_func(value, tick_number):
     return tick_number  # Return an empty string to hide labels
 
 # Set up the animation
-ani = animation.FuncAnimation(fig, update, interval=1000)  # Update every second
+ani = animation.FuncAnimation(fig, update, interval=1000, cache_frame_data=False)  # Update every second
 
 # Connect the event handler
 fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
